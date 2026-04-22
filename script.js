@@ -558,8 +558,70 @@ class Portfolio3D {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new Portfolio3D().hideLoader();
+    try {
+        new Portfolio3D().hideLoader();
+    } catch (error) {
+        console.error('Error initializing 3D portfolio:', error);
+        // Fallback to basic functionality
+        initBasic3DEffects();
+    }
 });
+
+// Fallback function for basic 3D effects
+function initBasic3DEffects() {
+    console.log('Loading basic 3D effects...');
+    
+    // Basic 3D card interactions
+    document.querySelectorAll('.profile-3d, .skill-3d, .project-3d').forEach(card => {
+        card.style.transform = 'rotateY(0deg)';
+        card.style.transition = 'transform 0.6s ease';
+        
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'rotateY(180deg) scale(1.05)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateY(0deg) scale(1)';
+        });
+    });
+    
+    // Basic particle effect
+    const canvas = document.getElementById('bg-canvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 3 + 1,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5
+            });
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+    }
+}
 
 // Console welcome message
 console.log('%c🚀 Welcome to Shahebaz\'s Advanced 3D Portfolio! ', 'background: linear-gradient(135deg, #00d4ff, #ff00ff); color: white; font-size: 16px; padding: 15px; border-radius: 10px; font-weight: bold;');
