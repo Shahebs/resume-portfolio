@@ -1,371 +1,566 @@
-// DOM Elements
-const navToggle = document.querySelector('.nav-toggle');
-const navMenu = document.querySelector('.nav-menu');
-const navLinks = document.querySelectorAll('.nav-link');
-const navbar = document.querySelector('.navbar');
-const skillBars = document.querySelectorAll('.skill-progress');
-const contactForm = document.getElementById('contactForm');
+// Advanced 3D Portfolio JavaScript
+// Three.js Particle System & Advanced 3D Interactions
 
-// Mobile Navigation Toggle
-navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    
-    // Animate hamburger menu
-    const bars = navToggle.querySelectorAll('.bar');
-    bars.forEach((bar, index) => {
-        if (navMenu.classList.contains('active')) {
-            if (index === 0) bar.style.transform = 'rotate(-45deg) translate(-5px, 6px)';
-            if (index === 1) bar.style.opacity = '0';
-            if (index === 2) bar.style.transform = 'rotate(45deg) translate(-5px, -6px)';
-        } else {
-            bar.style.transform = 'none';
-            bar.style.opacity = '1';
-        }
-    });
-});
+class Portfolio3D {
+    constructor() {
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.particles = null;
+        this.geometryShapes = [];
+        this.mouse = { x: 0, y: 0 };
+        this.init();
+    }
 
-// Close mobile menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        const bars = navToggle.querySelectorAll('.bar');
-        bars.forEach(bar => {
-            bar.style.transform = 'none';
-            bar.style.opacity = '1';
+    init() {
+        this.setupScene();
+        this.createParticles();
+        this.createGeometryShapes();
+        this.setupLighting();
+        this.setupEventListeners();
+        this.animate();
+        this.initUIInteractions();
+    }
+
+    setupScene() {
+        // Scene setup
+        this.scene = new THREE.Scene();
+        this.scene.fog = new THREE.Fog(0x0a0a0f, 1, 1000);
+
+        // Camera setup
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.z = 5;
+
+        // Renderer setup
+        this.renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('bg-canvas'), 
+            alpha: true, 
+            antialias: true,
+            powerPreference: 'high-performance'
         });
-    });
-});
-
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.boxShadow = 'none';
-    }
-});
-
-// Smooth scrolling for navigation links
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
         
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 70;
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Active navigation link based on scroll position
-window.addEventListener('scroll', () => {
-    let current = '';
-    const sections = document.querySelectorAll('section');
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.clientHeight;
-        
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').slice(1) === current) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// Animate skill bars when they come into view
-const animateSkillBars = () => {
-    const triggerBottom = window.innerHeight * 0.8;
-    
-    skillBars.forEach(bar => {
-        const barTop = bar.getBoundingClientRect().top;
-        
-        if (barTop < triggerBottom) {
-            const progress = bar.getAttribute('data-progress');
-            bar.style.width = progress + '%';
-        }
-    });
-};
-
-// Initial skill bar animation
-window.addEventListener('load', animateSkillBars);
-window.addEventListener('scroll', animateSkillBars);
-
-// Intersection Observer for fade-in animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-document.addEventListener('DOMContentLoaded', () => {
-    const animateElements = document.querySelectorAll('.timeline-item, .project-card, .highlight-card, .skill-item');
-    
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-});
-
-// Contact form handling
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(contactForm);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
-    
-    // Simple validation
-    if (!name || !email || !subject || !message) {
-        showNotification('Please fill in all fields', 'error');
-        return;
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setClearColor(0x0a0a0f, 0);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     }
-    
-    if (!isValidEmail(email)) {
-        showNotification('Please enter a valid email address', 'error');
-        return;
-    }
-    
-    // Simulate form submission (in real app, this would send to a server)
-    const submitButton = contactForm.querySelector('button[type="submit"]');
-    const originalText = submitButton.textContent;
-    
-    submitButton.textContent = 'Sending...';
-    submitButton.disabled = true;
-    
-    setTimeout(() => {
-        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-        contactForm.reset();
-        submitButton.textContent = originalText;
-        submitButton.disabled = false;
-    }, 2000);
-});
 
-// Email validation helper
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
+    createParticles() {
+        // Create particle system
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particleCount = 2000;
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
 
-// Notification system
-function showNotification(message, type = 'info') {
-    // Remove existing notification if any
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
+        for (let i = 0; i < particleCount; i++) {
+            // Position
+            positions[i * 3] = (Math.random() - 0.5) * 20;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 20 - 5;
+
+            // Color
+            const color = new THREE.Color();
+            color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5 + Math.random() * 0.5);
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending,
+            sizeAttenuation: true
+        });
+
+        this.particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        this.scene.add(this.particles);
+
+        // Add particle glow effect
+        const glowMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.3,
+            blending: THREE.AdditiveBlending,
+            color: 0x00d4ff
+        });
+
+        this.particlesGlow = new THREE.Points(particlesGeometry, glowMaterial);
+        this.scene.add(this.particlesGlow);
     }
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Add styles
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 10px;
-        color: white;
-        font-weight: 500;
-        z-index: 10000;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        max-width: 300px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    `;
-    
-    // Set background color based on type
-    if (type === 'success') {
-        notification.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
-    } else if (type === 'error') {
-        notification.style.background = 'linear-gradient(135deg, #f56565, #e53e3e)';
-    } else {
-        notification.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-    }
-    
-    // Add to DOM
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remove after 4 seconds
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
+
+    createGeometryShapes() {
+        // Floating geometric shapes
+        const shapes = [
+            { type: 'icosahedron', color: 0x00d4ff, position: [-8, 3, -10] },
+            { type: 'torusKnot', color: 0xff00ff, position: [6, -2, -8] },
+            { type: 'octahedron', color: 0x0099ff, position: [0, 5, -12] },
+            { type: 'tetrahedron', color: 0x00d4ff, position: [-4, -3, -6] }
+        ];
+
+        shapes.forEach((shape, index) => {
+            let geometry;
+            switch (shape.type) {
+                case 'icosahedron':
+                    geometry = new THREE.IcosahedronGeometry(1.5, 1);
+                    break;
+                case 'torusKnot':
+                    geometry = new THREE.TorusKnotGeometry(1, 0.4, 100, 16);
+                    break;
+                case 'octahedron':
+                    geometry = new THREE.OctahedronGeometry(1.2, 0);
+                    break;
+                case 'tetrahedron':
+                    geometry = new THREE.TetrahedronGeometry(1.5, 0);
+                    break;
             }
-        }, 300);
-    }, 4000);
-}
 
-// Typing effect for hero title
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.textContent = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.textContent += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
+            const material = new THREE.MeshPhongMaterial({
+                color: shape.color,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6,
+                emissive: shape.color,
+                emissiveIntensity: 0.2,
+                shininess: 100
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(...shape.position);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+
+            this.geometryShapes.push(mesh);
+            this.scene.add(mesh);
+        });
     }
-    
-    type();
-}
 
-// Initialize typing effect when page loads
-window.addEventListener('load', () => {
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.textContent;
-        typeWriter(heroTitle, originalText, 50);
+    setupLighting() {
+        // Ambient lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+        this.scene.add(ambientLight);
+
+        // Point lights
+        const pointLight1 = new THREE.PointLight(0x00d4ff, 1, 100);
+        pointLight1.position.set(5, 5, 5);
+        pointLight1.castShadow = true;
+        this.scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xff00ff, 0.8, 100);
+        pointLight2.position.set(-5, -5, 5);
+        pointLight2.castShadow = true;
+        this.scene.add(pointLight2);
+
+        const pointLight3 = new THREE.PointLight(0x0099ff, 0.6, 100);
+        pointLight3.position.set(0, 0, -10);
+        pointLight3.castShadow = true;
+        this.scene.add(pointLight3);
+
+        // Add light helpers
+        const sphereSize = 0.5;
+        const pointLightHelper1 = new THREE.PointLightHelper(pointLight1, sphereSize);
+        const pointLightHelper2 = new THREE.PointLightHelper(pointLight2, sphereSize);
+        const pointLightHelper3 = new THREE.PointLightHelper(pointLight3, sphereSize);
+
+        this.scene.add(pointLightHelper1);
+        this.scene.add(pointLightHelper2);
+        this.scene.add(pointLightHelper3);
     }
-});
 
-// Parallax effect for hero section
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    const heroText = document.querySelector('.hero-text');
-    
-    if (hero && heroText) {
-        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-        heroText.style.transform = `translateY(${scrolled * 0.3}px)`;
-        heroText.style.opacity = 1 - scrolled / 600;
-    }
-});
+    setupEventListeners() {
+        // Mouse move tracking
+        document.addEventListener('mousemove', (event) => {
+            this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
 
-// Project filter functionality (for future enhancement)
-function filterProjects(category) {
-    const projects = document.querySelectorAll('.project-card');
-    
-    projects.forEach(project => {
-        if (category === 'all') {
-            project.style.display = 'block';
-        } else {
-            const tags = project.querySelectorAll('.tech-tag');
-            let hasCategory = false;
+        // Window resize
+        window.addEventListener('resize', () => {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Scroll-based camera movement
+        window.addEventListener('scroll', () => {
+            const scrollY = window.pageYOffset;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = scrollY / maxScroll;
             
-            tags.forEach(tag => {
-                if (tag.textContent.toLowerCase().includes(category.toLowerCase())) {
-                    hasCategory = true;
+            this.camera.position.z = 5 + scrollProgress * 10;
+            this.camera.position.y = scrollProgress * 5;
+        });
+    }
+
+    animate() {
+        requestAnimationFrame(() => this.animate());
+
+        // Animate particles
+        if (this.particles) {
+            this.particles.rotation.y += 0.0005;
+            this.particles.rotation.x += 0.0002;
+            
+            // Mouse interaction with particles
+            this.particles.position.x = this.mouse.x * 2;
+            this.particles.position.y = this.mouse.y * 2;
+        }
+
+        if (this.particlesGlow) {
+            this.particlesGlow.rotation.y -= 0.0003;
+            this.particlesGlow.rotation.x += 0.0001;
+        }
+
+        // Animate geometric shapes
+        this.geometryShapes.forEach((shape, index) => {
+            shape.rotation.x += 0.01 * (index + 1);
+            shape.rotation.y += 0.008 * (index + 1);
+            shape.rotation.z += 0.005 * (index + 1);
+
+            // Floating motion
+            shape.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
+            shape.position.x += Math.cos(Date.now() * 0.0005 + index) * 0.01;
+
+            // Mouse interaction
+            const distance = Math.sqrt(
+                Math.pow(this.mouse.x - shape.position.x, 2) + 
+                Math.pow(this.mouse.y - shape.position.y, 2)
+            );
+            
+            if (distance < 3) {
+                shape.scale.setScalar(1.2 + Math.sin(Date.now() * 0.01) * 0.1);
+            } else {
+                shape.scale.setScalar(1);
+            }
+        });
+
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    initUIInteractions() {
+        this.init3DCards();
+        this.initNavigation();
+        this.initScrollAnimations();
+        this.initFormInteractions();
+    }
+
+    init3DCards() {
+        // Profile cube interaction
+        const profile3D = document.querySelector('.profile-3d');
+        if (profile3D) {
+            this.makeInteractive(profile3D);
+        }
+
+        // Skill cards
+        document.querySelectorAll('.skill-3d').forEach(card => {
+            this.makeInteractive(card);
+        });
+
+        // Project cards
+        document.querySelectorAll('.project-3d').forEach(card => {
+            this.makeInteractive(card);
+        });
+
+        // Timeline cards
+        document.querySelectorAll('.content-3d-card').forEach(card => {
+            this.makeInteractive(card);
+        });
+
+        // Contact card
+        document.querySelectorAll('.contact-3d-card').forEach(card => {
+            this.makeInteractive(card);
+        });
+    }
+
+    makeInteractive(element) {
+        let isMouseDown = false;
+        let startX = 0;
+        let startY = 0;
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+
+        element.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            element.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            currentRotationY += deltaX * 0.5;
+            currentRotationX += deltaY * 0.5;
+
+            element.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+            element.style.cursor = 'grab';
+        });
+
+        // Touch support
+        element.addEventListener('touchstart', (e) => {
+            isMouseDown = true;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isMouseDown) return;
+
+            const deltaX = e.touches[0].clientX - startX;
+            const deltaY = e.touches[0].clientY - startY;
+
+            currentRotationY += deltaX * 0.5;
+            currentRotationX += deltaY * 0.5;
+
+            element.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', () => {
+            isMouseDown = false;
+        });
+    }
+
+    initNavigation() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        // Mobile navigation
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            
+            const lines = navToggle.querySelectorAll('.toggle-line');
+            lines.forEach((line, index) => {
+                if (navMenu.classList.contains('active')) {
+                    line.style.transform = index === 1 ? 'scale(0)' : `rotate(${index === 0 ? 45 : -45}deg)`;
+                } else {
+                    line.style.transform = 'none';
+                }
+            });
+        });
+
+        // Smooth scrolling
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    const offsetTop = targetSection.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+
+                // Close mobile menu
+                navMenu.classList.remove('active');
+                const lines = navToggle.querySelectorAll('.toggle-line');
+                lines.forEach(line => {
+                    line.style.transform = 'none';
+                });
+            });
+        });
+
+        // Active link highlighting
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
                 }
             });
             
-            project.style.display = hasCategory ? 'block' : 'none';
-        }
-    });
-}
-
-// Add hover effect to social links
-document.querySelectorAll('.social-link').forEach(link => {
-    link.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-5px) rotate(5deg)';
-    });
-    
-    link.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) rotate(0)';
-    });
-});
-
-// Smooth reveal animation for stats
-function animateStats() {
-    const stats = document.querySelectorAll('.stat-number');
-    const triggerBottom = window.innerHeight * 0.8;
-    
-    stats.forEach(stat => {
-        const statTop = stat.getBoundingClientRect().top;
-        
-        if (statTop < triggerBottom && !stat.classList.contains('animated')) {
-            stat.classList.add('animated');
-            const finalNumber = parseInt(stat.textContent);
-            let currentNumber = 0;
-            const increment = finalNumber / 50;
-            
-            const updateNumber = () => {
-                currentNumber += increment;
-                if (currentNumber < finalNumber) {
-                    stat.textContent = Math.floor(currentNumber) + '+';
-                    requestAnimationFrame(updateNumber);
-                } else {
-                    stat.textContent = finalNumber + '+';
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === current) {
+                    link.classList.add('active');
                 }
-            };
-            
-            updateNumber();
-        }
-    });
-}
-
-window.addEventListener('scroll', animateStats);
-window.addEventListener('load', animateStats);
-
-// Add keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        const bars = navToggle.querySelectorAll('.bar');
-        bars.forEach(bar => {
-            bar.style.transform = 'none';
-            bar.style.opacity = '1';
+            });
         });
     }
-});
 
-// Performance optimization - Debounce scroll events
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
+    initScrollAnimations() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        const animateElements = document.querySelectorAll(
+            '.skill-3d-item, .timeline-item-3d, .project-3d-card, .contact-3d-card, .text-3d-card'
+        );
+        
+        animateElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+    }
+
+    initFormInteractions() {
+        const contactForm = document.getElementById('contactForm');
+        if (!contactForm) return;
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(contactForm);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            if (!name || !email || !subject || !message) {
+                this.showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!this.isValidEmail(email)) {
+                this.showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalContent = submitButton.innerHTML;
+            
+            submitButton.innerHTML = '<span class="btn-content"><i class="fas fa-spinner fa-spin"></i> Sending...</span>';
+            submitButton.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                this.showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                contactForm.reset();
+                submitButton.innerHTML = originalContent;
+                submitButton.disabled = false;
+            }, 2000);
+        });
+
+        // Input focus effects
+        const inputs = contactForm.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('focused');
+            });
+        });
+    }
+
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    showNotification(message, type = 'info') {
+        const existingNotification = document.querySelector('.notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 350px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+        `;
+        
+        if (type === 'success') {
+            notification.style.background = 'linear-gradient(135deg, #00d4ff, #0099ff)';
+        } else if (type === 'error') {
+            notification.style.background = 'linear-gradient(135deg, #ff00ff, #ff0066)';
+        } else {
+            notification.style.background = 'linear-gradient(135deg, #00d4ff, #ff00ff)';
+        }
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0) scale(1)';
+        }, 100);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%) scale(0.8)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 400);
+        }, 4000);
+    }
+
+    // Loading screen management
+    hideLoader() {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    loader.remove();
+                }, 500);
+            }, 1500);
+        }
+    }
 }
 
-// Apply debouncing to scroll events
-const debouncedScroll = debounce(() => {
-    // Scroll-related functions here
-}, 10);
-
-window.addEventListener('scroll', debouncedScroll);
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new Portfolio3D().hideLoader();
+});
 
 // Console welcome message
-console.log('%c Welcome to John Doe\'s Portfolio! ', 'background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 16px; padding: 10px; border-radius: 5px;');
-console.log('%c Feel free to explore the code and reach out! ', 'background: #f7fafc; color: #2d3748; font-size: 14px; padding: 8px; border-radius: 5px;');
+console.log('%c🚀 Welcome to Shahebaz\'s Advanced 3D Portfolio! ', 'background: linear-gradient(135deg, #00d4ff, #ff00ff); color: white; font-size: 16px; padding: 15px; border-radius: 10px; font-weight: bold;');
+console.log('%c✨ Experience the future of web development with stunning 3D effects! ', 'background: #00d4ff; color: white; font-size: 14px; padding: 10px; border-radius: 8px;');
