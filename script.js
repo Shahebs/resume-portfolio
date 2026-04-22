@@ -1,443 +1,141 @@
-// Advanced 3D Portfolio JavaScript
-// Three.js Particle System & Advanced 3D Interactions
+// Modern Portfolio JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Loader
+    const loader = document.querySelector('.loader');
+    setTimeout(() => {
+        loader.classList.add('hidden');
+    }, 1500);
 
-class Portfolio3D {
-    constructor() {
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.particles = null;
-        this.geometryShapes = [];
-        this.mouse = { x: 0, y: 0 };
-        this.init();
-    }
+    // Navigation
+    const navbar = document.querySelector('.navbar');
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-    init() {
-        this.setupScene();
-        this.createParticles();
-        this.createGeometryShapes();
-        this.setupLighting();
-        this.setupEventListeners();
-        this.animate();
-        this.initUIInteractions();
-    }
+    // Mobile navigation toggle
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
 
-    setupScene() {
-        // Scene setup
-        this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.Fog(0x0a0a0f, 1, 1000);
-
-        // Camera setup
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.z = 5;
-
-        // Renderer setup
-        this.renderer = new THREE.WebGLRenderer({ 
-            canvas: document.getElementById('bg-canvas'), 
-            alpha: true, 
-            antialias: true,
-            powerPreference: 'high-performance'
+    // Close mobile menu when clicking on a link
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
         });
-        
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(0x0a0a0f, 0);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    }
+    });
 
-    createParticles() {
-        // Create particle system
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particleCount = 2000;
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-
-        for (let i = 0; i < particleCount; i++) {
-            // Position
-            positions[i * 3] = (Math.random() - 0.5) * 20;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 20 - 5;
-
-            // Color
-            const color = new THREE.Color();
-            color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5 + Math.random() * 0.5);
-            colors[i * 3] = color.r;
-            colors[i * 3 + 1] = color.g;
-            colors[i * 3 + 2] = color.b;
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
         }
+    });
 
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    // Active navigation link
+    const sections = document.querySelectorAll('section');
+    const observerOptions = {
+        threshold: 0.5
+    };
 
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending,
-            sizeAttenuation: true
-        });
-
-        this.particles = new THREE.Points(particlesGeometry, particlesMaterial);
-        this.scene.add(this.particles);
-
-        // Add particle glow effect
-        const glowMaterial = new THREE.PointsMaterial({
-            size: 0.15,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending,
-            color: 0x00d4ff
-        });
-
-        this.particlesGlow = new THREE.Points(particlesGeometry, glowMaterial);
-        this.scene.add(this.particlesGlow);
-    }
-
-    createGeometryShapes() {
-        // Floating geometric shapes
-        const shapes = [
-            { type: 'icosahedron', color: 0x00d4ff, position: [-8, 3, -10] },
-            { type: 'torusKnot', color: 0xff00ff, position: [6, -2, -8] },
-            { type: 'octahedron', color: 0x0099ff, position: [0, 5, -12] },
-            { type: 'tetrahedron', color: 0x00d4ff, position: [-4, -3, -6] }
-        ];
-
-        shapes.forEach((shape, index) => {
-            let geometry;
-            switch (shape.type) {
-                case 'icosahedron':
-                    geometry = new THREE.IcosahedronGeometry(1.5, 1);
-                    break;
-                case 'torusKnot':
-                    geometry = new THREE.TorusKnotGeometry(1, 0.4, 100, 16);
-                    break;
-                case 'octahedron':
-                    geometry = new THREE.OctahedronGeometry(1.2, 0);
-                    break;
-                case 'tetrahedron':
-                    geometry = new THREE.TetrahedronGeometry(1.5, 0);
-                    break;
-            }
-
-            const material = new THREE.MeshPhongMaterial({
-                color: shape.color,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.6,
-                emissive: shape.color,
-                emissiveIntensity: 0.2,
-                shininess: 100
-            });
-
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(...shape.position);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-
-            this.geometryShapes.push(mesh);
-            this.scene.add(mesh);
-        });
-    }
-
-    setupLighting() {
-        // Ambient lighting
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
-        this.scene.add(ambientLight);
-
-        // Point lights
-        const pointLight1 = new THREE.PointLight(0x00d4ff, 1, 100);
-        pointLight1.position.set(5, 5, 5);
-        pointLight1.castShadow = true;
-        this.scene.add(pointLight1);
-
-        const pointLight2 = new THREE.PointLight(0xff00ff, 0.8, 100);
-        pointLight2.position.set(-5, -5, 5);
-        pointLight2.castShadow = true;
-        this.scene.add(pointLight2);
-
-        const pointLight3 = new THREE.PointLight(0x0099ff, 0.6, 100);
-        pointLight3.position.set(0, 0, -10);
-        pointLight3.castShadow = true;
-        this.scene.add(pointLight3);
-
-        // Add light helpers
-        const sphereSize = 0.5;
-        const pointLightHelper1 = new THREE.PointLightHelper(pointLight1, sphereSize);
-        const pointLightHelper2 = new THREE.PointLightHelper(pointLight2, sphereSize);
-        const pointLightHelper3 = new THREE.PointLightHelper(pointLight3, sphereSize);
-
-        this.scene.add(pointLightHelper1);
-        this.scene.add(pointLightHelper2);
-        this.scene.add(pointLightHelper3);
-    }
-
-    setupEventListeners() {
-        // Mouse move tracking
-        document.addEventListener('mousemove', (event) => {
-            this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        });
-
-        // Window resize
-        window.addEventListener('resize', () => {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Scroll-based camera movement
-        window.addEventListener('scroll', () => {
-            const scrollY = window.pageYOffset;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollProgress = scrollY / maxScroll;
-            
-            this.camera.position.z = 5 + scrollProgress * 10;
-            this.camera.position.y = scrollProgress * 5;
-        });
-    }
-
-    animate() {
-        requestAnimationFrame(() => this.animate());
-
-        // Animate particles
-        if (this.particles) {
-            this.particles.rotation.y += 0.0005;
-            this.particles.rotation.x += 0.0002;
-            
-            // Mouse interaction with particles
-            this.particles.position.x = this.mouse.x * 2;
-            this.particles.position.y = this.mouse.y * 2;
-        }
-
-        if (this.particlesGlow) {
-            this.particlesGlow.rotation.y -= 0.0003;
-            this.particlesGlow.rotation.x += 0.0001;
-        }
-
-        // Animate geometric shapes
-        this.geometryShapes.forEach((shape, index) => {
-            shape.rotation.x += 0.01 * (index + 1);
-            shape.rotation.y += 0.008 * (index + 1);
-            shape.rotation.z += 0.005 * (index + 1);
-
-            // Floating motion
-            shape.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
-            shape.position.x += Math.cos(Date.now() * 0.0005 + index) * 0.01;
-
-            // Mouse interaction
-            const distance = Math.sqrt(
-                Math.pow(this.mouse.x - shape.position.x, 2) + 
-                Math.pow(this.mouse.y - shape.position.y, 2)
-            );
-            
-            if (distance < 3) {
-                shape.scale.setScalar(1.2 + Math.sin(Date.now() * 0.01) * 0.1);
-            } else {
-                shape.scale.setScalar(1);
-            }
-        });
-
-        this.renderer.render(this.scene, this.camera);
-    }
-
-    initUIInteractions() {
-        this.init3DCards();
-        this.initNavigation();
-        this.initScrollAnimations();
-        this.initFormInteractions();
-    }
-
-    init3DCards() {
-        // Profile cube interaction
-        const profile3D = document.querySelector('.profile-3d');
-        if (profile3D) {
-            this.makeInteractive(profile3D);
-        }
-
-        // Skill cards
-        document.querySelectorAll('.skill-3d').forEach(card => {
-            this.makeInteractive(card);
-        });
-
-        // Project cards
-        document.querySelectorAll('.project-3d').forEach(card => {
-            this.makeInteractive(card);
-        });
-
-        // Timeline cards
-        document.querySelectorAll('.content-3d-card').forEach(card => {
-            this.makeInteractive(card);
-        });
-
-        // Contact card
-        document.querySelectorAll('.contact-3d-card').forEach(card => {
-            this.makeInteractive(card);
-        });
-    }
-
-    makeInteractive(element) {
-        let isMouseDown = false;
-        let startX = 0;
-        let startY = 0;
-        let currentRotationX = 0;
-        let currentRotationY = 0;
-
-        element.addEventListener('mousedown', (e) => {
-            isMouseDown = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            element.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isMouseDown) return;
-
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-
-            currentRotationY += deltaX * 0.5;
-            currentRotationX += deltaY * 0.5;
-
-            element.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
-
-            startX = e.clientX;
-            startY = e.clientY;
-        });
-
-        document.addEventListener('mouseup', () => {
-            isMouseDown = false;
-            element.style.cursor = 'grab';
-        });
-
-        // Touch support
-        element.addEventListener('touchstart', (e) => {
-            isMouseDown = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isMouseDown) return;
-
-            const deltaX = e.touches[0].clientX - startX;
-            const deltaY = e.touches[0].clientY - startY;
-
-            currentRotationY += deltaX * 0.5;
-            currentRotationX += deltaY * 0.5;
-
-            element.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
-
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
-
-        document.addEventListener('touchend', () => {
-            isMouseDown = false;
-        });
-    }
-
-    initNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        const navToggle = document.querySelector('.nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-
-        // Mobile navigation
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            
-            const lines = navToggle.querySelectorAll('.toggle-line');
-            lines.forEach((line, index) => {
-                if (navMenu.classList.contains('active')) {
-                    line.style.transform = index === 1 ? 'scale(0)' : `rotate(${index === 0 ? 45 : -45}deg)`;
-                } else {
-                    line.style.transform = 'none';
-                }
-            });
-        });
-
-        // Smooth scrolling
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href');
-                const targetSection = document.querySelector(targetId);
-                
-                if (targetSection) {
-                    const offsetTop = targetSection.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-
-                // Close mobile menu
-                navMenu.classList.remove('active');
-                const lines = navToggle.querySelectorAll('.toggle-line');
-                lines.forEach(line => {
-                    line.style.transform = 'none';
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const sectionId = entry.target.getAttribute('id');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
                 });
-            });
+            }
         });
+    }, observerOptions);
 
-        // Active link highlighting
-        window.addEventListener('scroll', () => {
-            let current = '';
-            const sections = document.querySelectorAll('section');
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
-                const sectionHeight = section.clientHeight;
-                
-                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-section') === current) {
-                    link.classList.add('active');
-                }
-            });
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+
+    // Smooth scrolling
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            }
         });
+    });
+
+    // Hero particles
+    const heroParticles = document.querySelector('.hero-particles');
+    if (heroParticles) {
+        createParticles(heroParticles);
     }
 
-    initScrollAnimations() {
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+    // Skill bars animation
+    const skillBars = document.querySelectorAll('.skill-bar');
+    const skillObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const bar = entry.target;
+                const level = bar.getAttribute('data-level');
+                setTimeout(() => {
+                    bar.style.width = level + '%';
+                }, 200);
+            }
+        });
+    }, { threshold: 0.5 });
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
+    skillBars.forEach(bar => {
+        skillObserver.observe(bar);
+    });
+
+    // Timeline animation
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const timelineObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
-                    entry.target.classList.add('animate-in');
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements
-        const animateElements = document.querySelectorAll(
-            '.skill-3d-item, .timeline-item-3d, .project-3d-card, .contact-3d-card, .text-3d-card'
-        );
-        
-        animateElements.forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(50px)';
-            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            observer.observe(el);
+                }, index * 200);
+            }
         });
-    }
+    }, { threshold: 0.1 });
 
-    initFormInteractions() {
-        const contactForm = document.getElementById('contactForm');
-        if (!contactForm) return;
+    timelineItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(30px)';
+        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        timelineObserver.observe(item);
+    });
 
+    // Project cards animation
+    const projectCards = document.querySelectorAll('.project-card');
+    const projectObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 150);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    projectCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        projectObserver.observe(card);
+    });
+
+    // Contact form
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
@@ -448,49 +146,39 @@ class Portfolio3D {
             const message = formData.get('message');
             
             if (!name || !email || !subject || !message) {
-                this.showNotification('Please fill in all fields', 'error');
+                showNotification('Please fill in all fields', 'error');
                 return;
             }
             
-            if (!this.isValidEmail(email)) {
-                this.showNotification('Please enter a valid email address', 'error');
+            if (!isValidEmail(email)) {
+                showNotification('Please enter a valid email address', 'error');
                 return;
             }
             
             const submitButton = contactForm.querySelector('button[type="submit"]');
-            const originalContent = submitButton.innerHTML;
+            const originalText = submitButton.innerHTML;
             
-            submitButton.innerHTML = '<span class="btn-content"><i class="fas fa-spinner fa-spin"></i> Sending...</span>';
+            submitButton.innerHTML = '<span>Sending...</span><i class="fas fa-spinner fa-spin"></i>';
             submitButton.disabled = true;
             
             // Simulate form submission
             setTimeout(() => {
-                this.showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
                 contactForm.reset();
-                submitButton.innerHTML = originalContent;
+                submitButton.innerHTML = originalText;
                 submitButton.disabled = false;
             }, 2000);
         });
-
-        // Input focus effects
-        const inputs = contactForm.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                input.parentElement.classList.add('focused');
-            });
-            
-            input.addEventListener('blur', () => {
-                input.parentElement.classList.remove('focused');
-            });
-        });
     }
 
-    isValidEmail(email) {
+    // Email validation
+    function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    showNotification(message, type = 'info') {
+    // Notification system
+    function showNotification(message, type = 'info') {
         const existingNotification = document.querySelector('.notification');
         if (existingNotification) {
             existingNotification.remove();
@@ -502,37 +190,37 @@ class Portfolio3D {
         
         notification.style.cssText = `
             position: fixed;
-            top: 20px;
+            top: 100px;
             right: 20px;
             padding: 15px 25px;
-            border-radius: 15px;
+            border-radius: 10px;
             color: white;
             font-weight: 600;
             z-index: 10000;
             transform: translateX(100%);
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             max-width: 350px;
-            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
         `;
         
         if (type === 'success') {
-            notification.style.background = 'linear-gradient(135deg, #00d4ff, #0099ff)';
+            notification.style.background = 'linear-gradient(135deg, #10b981, #059669)';
         } else if (type === 'error') {
-            notification.style.background = 'linear-gradient(135deg, #ff00ff, #ff0066)';
+            notification.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
         } else {
-            notification.style.background = 'linear-gradient(135deg, #00d4ff, #ff00ff)';
+            notification.style.background = 'linear-gradient(135deg, #6366f1, #4f46e5)';
         }
         
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            notification.style.transform = 'translateX(0) scale(1)';
+            notification.style.transform = 'translateX(0)';
         }, 100);
         
         setTimeout(() => {
-            notification.style.transform = 'translateX(100%) scale(0.8)';
+            notification.style.transform = 'translateX(100%)';
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.remove();
@@ -541,88 +229,67 @@ class Portfolio3D {
         }, 4000);
     }
 
-    // Loading screen management
-    hideLoader() {
-        const loader = document.getElementById('loader');
-        if (loader) {
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                loader.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    loader.remove();
-                }, 500);
-            }, 1500);
+    // Create particles
+    function createParticles(container) {
+        const particleCount = 50;
+        const particles = [];
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: ${Math.random() * 4 + 1}px;
+                height: ${Math.random() * 4 + 1}px;
+                background: linear-gradient(135deg, #6366f1, #ec4899);
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                opacity: ${Math.random() * 0.5 + 0.1};
+                animation: float ${Math.random() * 10 + 5}s linear infinite;
+            `;
+            container.appendChild(particle);
+            particles.push(particle);
         }
-    }
-}
-
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        new Portfolio3D().hideLoader();
-    } catch (error) {
-        console.error('Error initializing 3D portfolio:', error);
-        // Fallback to basic functionality
-        initBasic3DEffects();
-    }
-});
-
-// Fallback function for basic 3D effects
-function initBasic3DEffects() {
-    console.log('Loading basic 3D effects...');
-    
-    // Basic 3D card interactions
-    document.querySelectorAll('.profile-3d, .skill-3d, .project-3d').forEach(card => {
-        card.style.transform = 'rotateY(0deg)';
-        card.style.transition = 'transform 0.6s ease';
         
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'rotateY(180deg) scale(1.05)';
-        });
+        // Add floating animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translateY(0px) translateX(0px); }
+                25% { transform: translateY(-20px) translateX(10px); }
+                50% { transform: translateY(0px) translateX(-10px); }
+                75% { transform: translateY(20px) translateX(5px); }
+                100% { transform: translateY(0px) translateX(0px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Parallax effect
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.hero-particles');
         
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'rotateY(0deg) scale(1)';
+        parallaxElements.forEach(element => {
+            const speed = 0.5;
+            element.style.transform = `translateY(${scrolled * speed}px)`;
         });
     });
-    
-    // Basic particle effect
-    const canvas = document.getElementById('bg-canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        const particles = [];
-        for (let i = 0; i < 100; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 3 + 1,
-                speedX: (Math.random() - 0.5) * 0.5,
-                speedY: (Math.random() - 0.5) * 0.5
-            });
-        }
-        
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach(particle => {
-                particle.x += particle.speedX;
-                particle.y += particle.speedY;
-                
-                ctx.beginPath();
-                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
-                ctx.fill();
-            });
-            
-            requestAnimationFrame(animateParticles);
-        }
-        
-        animateParticles();
-    }
-}
 
-// Console welcome message
-console.log('%c🚀 Welcome to Shahebaz\'s Advanced 3D Portfolio! ', 'background: linear-gradient(135deg, #00d4ff, #ff00ff); color: white; font-size: 16px; padding: 15px; border-radius: 10px; font-weight: bold;');
-console.log('%c✨ Experience the future of web development with stunning 3D effects! ', 'background: #00d4ff; color: white; font-size: 14px; padding: 10px; border-radius: 8px;');
+    // Mouse move effect
+    document.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+        
+        const heroImage = document.querySelector('.hero-image');
+        if (heroImage) {
+            const moveX = (mouseX - 0.5) * 20;
+            const moveY = (mouseY - 0.5) * 20;
+            heroImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        }
+    });
+
+    // Console welcome message
+    console.log('%c Welcome to Shahebaz\'s Modern Portfolio! ', 'background: linear-gradient(135deg, #6366f1, #ec4899); color: white; font-size: 16px; padding: 15px; border-radius: 10px; font-weight: bold;');
+    console.log('%c Built with modern web technologies and lots of passion! ', 'background: #6366f1; color: white; font-size: 14px; padding: 10px; border-radius: 8px;');
+});

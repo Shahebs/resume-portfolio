@@ -3,688 +3,505 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shahebaz Shaikh - Cloud & DevOps Expert | 3D Portfolio</title>
+    <title>Shahebaz Shaikh | Cloud & DevOps Engineer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Loading Screen -->
-    <div id="loader" class="loader">
-        <div class="loader-container">
-            <div class="loader-geometry">
-                <div class="loader-ring"></div>
-                <div class="loader-ring"></div>
-                <div class="loader-ring"></div>
-                <div class="loader-text">
-                    <span class="loading-letter" data-letter="S">S</span>
-                    <span class="loading-letter" data-letter="h">h</span>
-                    <span class="loading-letter" data-letter="a">a</span>
-                    <span class="loading-letter" data-letter="h">h</span>
-                    <span class="loading-letter" data-letter="e">e</span>
-                    <span class="loading-letter" data-letter="b">b</span>
-                    <span class="loading-letter" data-letter="a">a</span>
-                    <span class="loading-letter" data-letter="z">z</span>
-                </div>
-            </div>
-            <div class="loader-progress">
-                <div class="progress-bar"></div>
-                <span class="progress-text">Initializing 3D Experience...</span>
-            </div>
+    <div class="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p>Loading amazing content...</p>
         </div>
     </div>
 
-    <!-- 3D Background Canvas -->
-    <div id="bg-canvas" class="bg-canvas"></div>
-    
-    <!-- Particle System -->
-    <div id="particles-container" class="particles-container"></div>
-
     <!-- Navigation -->
-    <nav class="nav-3d">
+    <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <div class="logo-3d">
-                    <div class="logo-face front">S</div>
-                    <div class="logo-face back">S</div>
-                    <div class="logo-face left">H</div>
-                    <div class="logo-face right">H</div>
-                </div>
-                <span class="logo-text">Shahebaz</span>
+                <span class="logo-text">Shahebaz Shaikh</span>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#hero" class="nav-link" data-section="hero">
-                        <span class="nav-text">Home</span>
-                        <div class="nav-indicator"></div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#about" class="nav-link" data-section="about">
-                        <span class="nav-text">About</span>
-                        <div class="nav-indicator"></div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#skills" class="nav-link" data-section="skills">
-                        <span class="nav-text">Skills</span>
-                        <div class="nav-indicator"></div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#experience" class="nav-link" data-section="experience">
-                        <span class="nav-text">Journey</span>
-                        <div class="nav-indicator"></div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#projects" class="nav-link" data-section="projects">
-                        <span class="nav-text">Creations</span>
-                        <div class="nav-indicator"></div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#contact" class="nav-link" data-section="contact">
-                        <span class="nav-text">Connect</span>
-                        <div class="nav-indicator"></div>
-                    </a>
-                </li>
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-toggle">
-                <span class="toggle-line"></span>
-                <span class="toggle-line"></span>
-                <span class="toggle-line"></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-3d">
-        <!-- Hero Section -->
-        <section id="hero" class="hero-3d">
-            <div class="hero-container">
-                <div class="hero-content">
-                    <div class="hero-left">
-                        <div class="hero-title-container">
-                            <h1 class="hero-title">
-                                <span class="title-word" data-word="Hi">Hi</span>
-                                <span class="title-word" data-word="I'm">I'm</span>
-                                <span class="title-word highlight" data-word="Shahebaz">Shahebaz</span>
-                            </h1>
-                            <div class="title-3d-effect">
-                                <span class="title-3d-letter" data-letter="S">S</span>
-                                <span class="title-3d-letter" data-letter="h">h</span>
-                                <span class="title-3d-letter" data-letter="a">a</span>
-                                <span class="title-3d-letter" data-letter="h">h</span>
-                                <span class="title-3d-letter" data-letter="e">e</span>
-                                <span class="title-3d-letter" data-letter="b">b</span>
-                                <span class="title-3d-letter" data-letter="a">a</span>
-                                <span class="title-3d-letter" data-letter="z">z</span>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg">
+            <div class="hero-particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="greeting">Hi, I'm</span>
+                    <span class="name">Shahebaz Shaikh</span>
+                    <span class="title">Cloud & DevOps Engineer</span>
+                </h1>
+                <p class="hero-description">
+                    Building robust cloud infrastructure and automating DevOps pipelines with 9+ years of expertise in Kubernetes, Docker, and cloud technologies.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">
+                        <span>Get In Touch</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="#projects" class="btn btn-secondary">
+                        <span>View Projects</span>
+                        <i class="fas fa-folder"></i>
+                    </a>
+                </div>
+                <div class="hero-social">
+                    <a href="https://github.com/Shahebs/Shahebs" class="social-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/shahebaz-shaikh-59851b80/" class="social-link" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="mailto:shazzyshahebaz@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-container">
+                    <img src="images/shazz.jpg" alt="Shahebaz Shaikh">
+                    <div class="image-overlay"></div>
+                    <div class="image-border"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About Me</h2>
+                <p class="section-subtitle">Passionate about cloud infrastructure and DevOps automation</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        Highly motivated IT professional with 9+ years of experience and expertise in Kubernetes and container orchestration. 
+                        Certified Kubernetes Administrator (CKA) and Red Hat Certified Specialist in Containers (EX188) with solid 
+                        understanding of deploying, scaling, and managing containerized applications.
+                    </p>
+                    <p>
+                        Known for quickly grasping new technologies and applying them to real-world scenarios. Skilled in collaborative 
+                        team environments and dedicated to continuous learning and professional development.
+                    </p>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">9+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Projects Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">CKA</span>
+                            <span class="stat-label">Certified</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Technical Skills</h2>
+                <p class="section-subtitle">Technologies I work with</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <i class="fab fa-docker"></i>
+                        <h3>Orchestration Technologies</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span class="skill-name">Kubernetes</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="95"></div>
+                                <span class="skill-percentage">95%</span>
                             </div>
                         </div>
-                        <h2 class="hero-subtitle">Cloud & DevOps Architect</h2>
-                        <p class="hero-description">
-                            Crafting the future of cloud infrastructure with 9+ years of expertise in 
-                            Kubernetes, containerization, and DevOps automation. Transforming complex challenges 
-                            into scalable, efficient solutions.
-                        </p>
-                        <div class="hero-actions">
-                            <button class="btn-3d primary" data-action="explore">
-                                <span class="btn-content">
-                                    <i class="fas fa-rocket"></i>
-                                    <span>Explore My Work</span>
-                                </span>
-                                <div class="btn-3d-effect"></div>
-                            </button>
-                            <button class="btn-3d secondary" data-action="contact">
-                                <span class="btn-content">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>Get In Touch</span>
-                                </span>
-                                <div class="btn-3d-effect"></div>
-                            </button>
+                        <div class="skill-item">
+                            <span class="skill-name">Docker</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="85"></div>
+                                <span class="skill-percentage">85%</span>
+                            </div>
                         </div>
-                        <div class="hero-social">
-                            <a href="https://github.com/Shahebs/Shahebs" class="social-3d" target="_blank">
-                                <div class="social-3d-inner">
+                        <div class="skill-item">
+                            <span class="skill-name">OpenShift</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="75"></div>
+                                <span class="skill-percentage">75%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <i class="fab fa-aws"></i>
+                        <h3>Cloud Platforms</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span class="skill-name">AWS</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="70"></div>
+                                <span class="skill-percentage">70%</span>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Azure</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="60"></div>
+                                <span class="skill-percentage">60%</span>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">GCP</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="50"></div>
+                                <span class="skill-percentage">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <i class="fas fa-cogs"></i>
+                        <h3>DevOps Tools</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span class="skill-name">Jenkins</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="90"></div>
+                                <span class="skill-percentage">90%</span>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Ansible</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="90"></div>
+                                <span class="skill-percentage">90%</span>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Terraform</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="85"></div>
+                                <span class="skill-percentage">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <i class="fab fa-linux"></i>
+                        <h3>Core Technologies</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span class="skill-name">Linux</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="95"></div>
+                                <span class="skill-percentage">95%</span>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Git</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="92"></div>
+                                <span class="skill-percentage">92%</span>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Prometheus</span>
+                            <div class="skill-level">
+                                <div class="skill-bar" data-level="80"></div>
+                                <span class="skill-percentage">80%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Work Experience</h2>
+                <p class="section-subtitle">My professional journey</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025 - Present</div>
+                        <h3>KubeAppOps Engineer</h3>
+                        <h4>Nityo Infotech Services</h4>
+                        <ul>
+                            <li>Delivered operational support for Linux and Kubernetes applications</li>
+                            <li>Executed change management activities, Work Items, Incidents & Service Requests</li>
+                            <li>Deployed Kubernetes applications using Harness in cloud environments</li>
+                            <li>Implemented CI/CD pipelines reducing deployment time by 60%</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2022 - 2025</div>
+                        <h3>Technical Support Specialist</h3>
+                        <h4>Red Hat India</h4>
+                        <ul>
+                            <li>Developed and maintained SFDC cases, Linux Installation, system Registration, patching</li>
+                            <li>Utilized Red Hat API services for user, account and case management</li>
+                            <li>Collaborated with teams to improve server performance/optimization</li>
+                            <li>Implemented solutions for seamless Kubernetes orchestration</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2019 - 2022</div>
+                        <h3>Senior Technical Executive</h3>
+                        <h4>Vodafone Shared Services India</h4>
+                        <ul>
+                            <li>Install and configure Red Hat Linux server on virtual machines</li>
+                            <li>Proactively monitored performance and security of systems</li>
+                            <li>Create users, groups and assign permissions</li>
+                            <li>Worked in cross-functional teams to deliver projects</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2017 - 2019</div>
+                        <h3>Customer Support Executive</h3>
+                        <h4>Amazon India Development Center</h4>
+                        <ul>
+                            <li>Worked on Linux server on virtual machines</li>
+                            <li>Optimized the performance and security of systems</li>
+                            <li>Create users, groups and assign permissions</li>
+                            <li>Worked in cross-functional teams to deliver projects</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Projects</h2>
+                <p class="section-subtitle">Recent work and accomplishments</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="images/kuben.jpg" alt="Kubernetes Platform">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" class="project-link">
                                     <i class="fab fa-github"></i>
-                                    <div class="social-3d-effect"></div>
-                                </div>
-                            </a>
-                            <a href="https://www.linkedin.com/in/shahebaz-shaikh-59851b80/" class="social-3d" target="_blank">
-                                <div class="social-3d-inner">
-                                    <i class="fab fa-linkedin"></i>
-                                    <div class="social-3d-effect"></div>
-                                </div>
-                            </a>
-                            <a href="mailto:shazzyshahebaz@gmail.com" class="social-3d">
-                                <div class="social-3d-inner">
-                                    <i class="fas fa-envelope"></i>
-                                    <div class="social-3d-effect"></div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="hero-right">
-                        <div class="profile-3d-container">
-                            <div class="profile-3d">
-                                <div class="profile-face front">
-                                    <img src="images/shazz.jpg" alt="Shahebaz Shaikh">
-                                    <div class="profile-overlay">
-                                        <span class="profile-status">Available for Work</span>
-                                    </div>
-                                </div>
-                                <div class="profile-face back">
-                                    <div class="profile-stats">
-                                        <div class="stat-ring">
-                                            <span class="stat-number">9+</span>
-                                            <span class="stat-label">Years</span>
-                                        </div>
-                                        <div class="stat-ring">
-                                            <span class="stat-number">50+</span>
-                                            <span class="stat-label">Projects</span>
-                                        </div>
-                                        <div class="stat-ring">
-                                            <span class="stat-number">CKA</span>
-                                            <span class="stat-label">Certified</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="profile-face left">
-                                    <div class="tech-icons">
-                                        <i class="fab fa-docker"></i>
-                                        <i class="fab fa-aws"></i>
-                                        <i class="fas fa-cube"></i>
-                                    </div>
-                                </div>
-                                <div class="profile-face right">
-                                    <div class="cert-badges">
-                                        <span class="badge">CKA</span>
-                                        <span class="badge">RHCS</span>
-                                        <span class="badge">AWS</span>
-                                    </div>
-                                </div>
+                    <div class="project-content">
+                        <h3>Kubernetes Management Platform</h3>
+                        <p>Enterprise-grade Kubernetes orchestration platform with automated scaling, monitoring, and deployment capabilities.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Kubernetes</span>
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Prometheus</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="images/CI.jpg" alt="CI/CD Pipeline">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
                             </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Automated CI/CD Pipeline</h3>
+                        <p>Complete DevOps automation solution with Jenkins, Docker, and cloud deployment for faster and more reliable releases.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Jenkins</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">Ansible</span>
+                            <span class="tech-tag">AWS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="images/cloud.jpg" alt="Monitoring Dashboard">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Cloud Monitoring Dashboard</h3>
+                        <p>Real-time monitoring and alerting system for cloud infrastructure with comprehensive metrics and analytics.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Grafana</span>
+                            <span class="tech-tag">Prometheus</span>
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">WebSocket</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- About Section -->
-        <section id="about" class="about-3d">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="title-3d">About</span>
-                        <div class="title-3d-effect"></div>
-                    </h2>
-                </div>
-                <div class="about-content">
-                    <div class="about-text">
-                        <div class="text-3d-card">
-                            <div class="text-3d-face front">
-                                <h3>Cloud DevOps Specialist</h3>
-                                <p>
-                                    Highly motivated IT professional with 9+ years of experience and expertise in 
-                                    Kubernetes and container orchestration. Certified Kubernetes Administrator (CKA) and 
-                                    Red Hat Certified Specialist in Containers (EX188).
-                                </p>
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Let's discuss your next project</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Let's Connect</h3>
+                    <p>I'm always interested in hearing about new opportunities and exciting projects. Whether you have a question or just want to say hi, feel free to reach out!</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
                             </div>
-                            <div class="text-3d-face back">
-                                <p>
-                                    Known for quickly grasping new technologies and applying them to real-world scenarios. 
-                                    Skilled in collaborative team environments and dedicated to continuous learning 
-                                    and professional development.
-                                </p>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p>shazzyshahebaz@gmail.com</p>
                             </div>
                         </div>
-                        <div class="skills-3d-showcase">
-                            <div class="skill-3d-item">
-                                <div class="skill-3d">
-                                    <div class="skill-3d-face front">
-                                        <i class="fas fa-cube"></i>
-                                        <span>Kubernetes</span>
-                                    </div>
-                                    <div class="skill-3d-face back">
-                                        <div class="skill-level">
-                                            <div class="skill-circle" data-level="95"></div>
-                                            <span>Expert Level</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
                             </div>
-                            <div class="skill-3d-item">
-                                <div class="skill-3d">
-                                    <div class="skill-3d-face front">
-                                        <i class="fab fa-docker"></i>
-                                        <span>Docker</span>
-                                    </div>
-                                    <div class="skill-3d-face back">
-                                        <div class="skill-level">
-                                            <div class="skill-circle" data-level="85"></div>
-                                            <span>Advanced</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="contact-text">
+                                <h4>Phone</h4>
+                                <p>+91 9028363236</p>
                             </div>
-                            <div class="skill-3d-item">
-                                <div class="skill-3d">
-                                    <div class="skill-3d-face front">
-                                        <i class="fab fa-aws"></i>
-                                        <span>AWS</span>
-                                    </div>
-                                    <div class="skill-3d-face back">
-                                        <div class="skill-level">
-                                            <div class="skill-circle" data-level="70"></div>
-                                            <span>Proficient</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Location</h4>
+                                <p>Pune, India</p>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Send Message</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills" class="skills-3d">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="title-3d">Technical Arsenal</span>
-                        <div class="title-3d-effect"></div>
-                    </h2>
-                </div>
-                <div class="skills-grid-3d">
-                    <div class="skill-category-3d">
-                        <div class="category-3d">
-                            <div class="category-3d-face front">
-                                <h3>Cloud Platforms</h3>
-                                <i class="fas fa-cloud"></i>
-                            </div>
-                            <div class="category-3d-face back">
-                                <div class="skill-list">
-                                    <div class="skill-item">
-                                        <span class="skill-name">AWS</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="70"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-item">
-                                        <span class="skill-name">Azure</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="60"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-item">
-                                        <span class="skill-name">GCP</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="50"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category-3d">
-                        <div class="category-3d">
-                            <div class="category-3d-face front">
-                                <h3>DevOps Tools</h3>
-                                <i class="fas fa-cogs"></i>
-                            </div>
-                            <div class="category-3d-face back">
-                                <div class="skill-list">
-                                    <div class="skill-item">
-                                        <span class="skill-name">Jenkins</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="90"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-item">
-                                        <span class="skill-name">GitLab CI</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="85"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-item">
-                                        <span class="skill-name">Ansible</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="90"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category-3d">
-                        <div class="category-3d">
-                            <div class="category-3d-face front">
-                                <h3>Container Tech</h3>
-                                <i class="fab fa-docker"></i>
-                            </div>
-                            <div class="category-3d-face back">
-                                <div class="skill-list">
-                                    <div class="skill-item">
-                                        <span class="skill-name">Kubernetes</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="95"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-item">
-                                        <span class="skill-name">Docker</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="85"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-item">
-                                        <span class="skill-name">OpenShift</span>
-                                        <div class="skill-bar-3d">
-                                            <div class="skill-progress" data-progress="75"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience Section -->
-        <section id="experience" class="experience-3d">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="title-3d">Professional Journey</span>
-                        <div class="title-3d-effect"></div>
-                    </h2>
-                </div>
-                <div class="timeline-3d">
-                    <div class="timeline-item-3d">
-                        <div class="timeline-marker">
-                            <div class="marker-3d">
-                                <div class="marker-3d-face front">2025</div>
-                                <div class="marker-3d-face back">Present</div>
-                            </div>
-                        </div>
-                        <div class="timeline-content-3d">
-                            <div class="content-3d-card">
-                                <div class="content-3d-face front">
-                                    <h3>KubeAppOps Engineer</h3>
-                                    <h4>Nityo Infotech Services</h4>
-                                    <div class="timeline-tags">
-                                        <span class="tag">Kubernetes</span>
-                                        <span class="tag">DevOps</span>
-                                        <span class="tag">Cloud</span>
-                                    </div>
-                                </div>
-                                <div class="content-3d-face back">
-                                    <ul>
-                                        <li>Delivered operational support for Linux and Kubernetes applications</li>
-                                        <li>Executed change management activities, Work Items, Incidents & Service Requests</li>
-                                        <li>Deployed Kubernetes applications using Harness in cloud environments</li>
-                                        <li>Implemented CI/CD pipelines reducing deployment time by 60%</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item-3d">
-                        <div class="timeline-marker">
-                            <div class="marker-3d">
-                                <div class="marker-3d-face front">2022</div>
-                                <div class="marker-3d-face back">2025</div>
-                            </div>
-                        </div>
-                        <div class="timeline-content-3d">
-                            <div class="content-3d-card">
-                                <div class="content-3d-face front">
-                                    <h3>Technical Support Specialist</h3>
-                                    <h4>Red Hat India</h4>
-                                    <div class="timeline-tags">
-                                        <span class="tag">Linux</span>
-                                        <span class="tag">Support</span>
-                                        <span class="tag">API</span>
-                                    </div>
-                                </div>
-                                <div class="content-3d-face back">
-                                    <ul>
-                                        <li>Developed and maintained SFDC cases, Linux Installation, system Registration</li>
-                                        <li>Utilized Red Hat API services for user, account and case management</li>
-                                        <li>Collaborated with teams to improve server performance/optimization</li>
-                                        <li>Implemented solutions for seamless Kubernetes orchestration</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item-3d">
-                        <div class="timeline-marker">
-                            <div class="marker-3d">
-                                <div class="marker-3d-face front">2019</div>
-                                <div class="marker-3d-face back">2022</div>
-                            </div>
-                        </div>
-                        <div class="timeline-content-3d">
-                            <div class="content-3d-card">
-                                <div class="content-3d-face front">
-                                    <h3>Senior Technical Executive</h3>
-                                    <h4>Vodafone Shared Services India</h4>
-                                    <div class="timeline-tags">
-                                        <span class="tag">Linux</span>
-                                        <span class="tag">Monitoring</span>
-                                        <span class="tag">Security</span>
-                                    </div>
-                                </div>
-                                <div class="content-3d-face back">
-                                    <ul>
-                                        <li>Install and configure Red Hat Linux server on virtual machines</li>
-                                        <li>Proactively monitored performance and security of systems</li>
-                                        <li>Create users, groups and assign permissions</li>
-                                        <li>Worked in cross-functional teams to deliver projects</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="projects-3d">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="title-3d">Featured Creations</span>
-                        <div class="title-3d-effect"></div>
-                    </h2>
-                </div>
-                <div class="projects-grid-3d">
-                    <div class="project-3d-card">
-                        <div class="project-3d">
-                            <div class="project-3d-face front">
-                                <div class="project-image">
-                                    <img src="https://picsum.photos/seed/k8s-platform/400/250.jpg" alt="Kubernetes Platform">
-                                </div>
-                                <div class="project-info">
-                                    <h3>Kubernetes Management Platform</h3>
-                                    <p>Enterprise-grade Kubernetes orchestration platform with automated scaling and monitoring</p>
-                                </div>
-                            </div>
-                            <div class="project-3d-face back">
-                                <div class="project-details">
-                                    <div class="project-tech">
-                                        <span class="tech-tag">Kubernetes</span>
-                                        <span class="tech-tag">React</span>
-                                        <span class="tech-tag">Node.js</span>
-                                        <span class="tech-tag">Prometheus</span>
-                                    </div>
-                                    <div class="project-actions">
-                                        <a href="#" class="project-link">
-                                            <i class="fas fa-external-link-alt"></i>
-                                            Live Demo
-                                        </a>
-                                        <a href="#" class="project-link">
-                                            <i class="fab fa-github"></i>
-                                            Source Code
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-3d-card">
-                        <div class="project-3d">
-                            <div class="project-3d-face front">
-                                <div class="project-image">
-                                    <img src="https://picsum.photos/seed/ci-cd-pipeline/400/250.jpg" alt="CI/CD Pipeline">
-                                </div>
-                                <div class="project-info">
-                                    <h3>Automated CI/CD Pipeline</h3>
-                                    <p>Complete DevOps automation solution with Jenkins, Docker, and cloud deployment</p>
-                                </div>
-                            </div>
-                            <div class="project-3d-face back">
-                                <div class="project-details">
-                                    <div class="project-tech">
-                                        <span class="tech-tag">Jenkins</span>
-                                        <span class="tech-tag">Docker</span>
-                                        <span class="tech-tag">Ansible</span>
-                                        <span class="tech-tag">AWS</span>
-                                    </div>
-                                    <div class="project-actions">
-                                        <a href="#" class="project-link">
-                                            <i class="fas fa-external-link-alt"></i>
-                                            Live Demo
-                                        </a>
-                                        <a href="#" class="project-link">
-                                            <i class="fab fa-github"></i>
-                                            Source Code
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-3d-card">
-                        <div class="project-3d">
-                            <div class="project-3d-face front">
-                                <div class="project-image">
-                                    <img src="https://picsum.photos/seed/monitoring-dashboard/400/250.jpg" alt="Monitoring Dashboard">
-                                </div>
-                                <div class="project-info">
-                                    <h3>Cloud Monitoring Dashboard</h3>
-                                    <p>Real-time monitoring and alerting system for cloud infrastructure</p>
-                                </div>
-                            </div>
-                            <div class="project-3d-face back">
-                                <div class="project-details">
-                                    <div class="project-tech">
-                                        <span class="tech-tag">Grafana</span>
-                                        <span class="tech-tag">Prometheus</span>
-                                        <span class="tech-tag">JavaScript</span>
-                                        <span class="tech-tag">WebSocket</span>
-                                    </div>
-                                    <div class="project-actions">
-                                        <a href="#" class="project-link">
-                                            <i class="fas fa-external-link-alt"></i>
-                                            Live Demo
-                                        </a>
-                                        <a href="#" class="project-link">
-                                            <i class="fab fa-github"></i>
-                                            Source Code
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact-3d">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="title-3d">Let's Connect</span>
-                        <div class="title-3d-effect"></div>
-                    </h2>
-                </div>
-                <div class="contact-content">
-                    <div class="contact-info-3d">
-                        <div class="contact-3d-card">
-                            <div class="contact-3d-face front">
-                                <h3>Get in Touch</h3>
-                                <p>Ready to discuss your next cloud project or opportunity</p>
-                                <div class="contact-methods">
-                                    <div class="contact-method">
-                                        <i class="fas fa-envelope"></i>
-                                        <span>shazzyshahebaz@gmail.com</span>
-                                    </div>
-                                    <div class="contact-method">
-                                        <i class="fas fa-phone"></i>
-                                        <span>+91 9028363236</span>
-                                    </div>
-                                    <div class="contact-method">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>Pune, India</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contact-3d-face back">
-                                <div class="contact-form-3d">
-                                    <form id="contactForm">
-                                        <div class="form-group-3d">
-                                            <input type="text" id="name" name="name" placeholder="Your Name" required>
-                                            <div class="input-3d-effect"></div>
-                                        </div>
-                                        <div class="form-group-3d">
-                                            <input type="email" id="email" name="email" placeholder="Your Email" required>
-                                            <div class="input-3d-effect"></div>
-                                        </div>
-                                        <div class="form-group-3d">
-                                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                                            <div class="input-3d-effect"></div>
-                                        </div>
-                                        <div class="form-group-3d">
-                                            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
-                                            <div class="input-3d-effect"></div>
-                                        </div>
-                                        <button type="submit" class="btn-3d primary">
-                                            <span class="btn-content">
-                                                <i class="fas fa-paper-plane"></i>
-                                                <span>Send Message</span>
-                                            </span>
-                                            <div class="btn-3d-effect"></div>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="footer-3d">
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2026 Shahebaz Shaikh R. All rights reserved.</p>
-                <p>Crafted with <i class="fas fa-heart"></i> and <i class="fas fa-coffee"></i> in 3D</p>
+                <div class="footer-text">
+                    <p>&copy; 2026 Shahebaz Shaikh R. All rights reserved.</p>
+                    <p>Built with <i class="fas fa-heart"></i> and lots of <i class="fas fa-coffee"></i></p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://github.com/Shahebs/Shahebs" class="social-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/shahebaz-shaikh-59851b80/" class="social-link" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="mailto:shazzyshahebaz@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
